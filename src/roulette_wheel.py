@@ -16,3 +16,5 @@ class RouletteWheel:
 
     def get_outcome(self):
         return self.outcome
+
+    

@@ -8,9 +8,9 @@ from constants import PlayerType
 
 if __name__ == "__main__":
 
-    player1 = Player("Alice", PlayerType.HIGH_RISK)
-    player2 = Player("Bob", PlayerType.MODERATE_RISK)
-    player3 = Player("Charlie", PlayerType.LOW_RISK)
+    player1 = Player("Alice", PlayerType.HIGH_RISK, 100, 1, 50)
+    player2 = Player("Bob", PlayerType.MODERATE_RISK, 100, 1, 50)
+    player3 = Player("Charlie", PlayerType.LOW_RISK, 100, 1, 50)
 
     rouletteSimulator = RouletteSimulator([player1, player2, player3])
 

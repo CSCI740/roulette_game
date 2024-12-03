@@ -10,10 +10,7 @@ class RouletteGame:
     def setup_game(self, players):
         """Plays the game for a set number of rounds."""
         for player in players:
-            if player.is_bankrupt():
-                print(f"{player.name} is out of money.")
-            else:
-                player.place_bet()
+            player.place_bet()
                 
     def play_game(self, wheel):
         result = wheel.spin()
@@ -30,3 +27,16 @@ class RouletteGame:
         " Adjust betting money according to game result"
         for player in self.players:
             player.adjust_bet_money(wheel)
+
+    def settle_game(self, players):
+        for player in players:
+            if player.is_max_round():
+                print(f"{player.name} reaches the maximum round.")
+            elif player.is_bankrupt():
+                print(f"{player.name} is out of money.")
+            elif player.is_lack_of_betting_money():
+                print(f"{player.name} is lack of money.")
+            elif player.is_double_profit():
+                print(f"{player.name} achieves double profit.")
+            else:
+                print(f"{player.name} can continue game.")

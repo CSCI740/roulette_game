@@ -3,11 +3,11 @@
 from constants import Bet_Strategy
 
 class BettingStrategy:
-    def __init__(self, bet_strategy):
+    def __init__(self, bet_strategy, bet_money):
         self.bet_strategy = bet_strategy
 
-        self.current_bet = 1
-        self.previous_bet = 1               # for Fibonacci strategy
+        self.current_bet = bet_money
+        self.previous_bet = bet_money               # for Fibonacci strategy
 
     def init_bet_money(self, bankroll):
         """Adjusts the bet based on the outcome (win/loss)."""
@@ -61,4 +61,7 @@ class BettingStrategy:
         self.previous_bet = self.current_bet
         self.current_bet = next_bet
 
+        return self.current_bet
+
+    def get_current_bet_money(self):
         return self.current_bet

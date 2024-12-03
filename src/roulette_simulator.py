@@ -29,3 +29,4 @@ class RouletteSimulator:
             self.game.play_game(wheel)
             self.game.payout_game(self.players, wheel)
             self.game.adjust_game(self.players, wheel)
+            self.game.settle_game(self.players)
