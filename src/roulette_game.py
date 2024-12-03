@@ -29,6 +29,7 @@ class RouletteGame:
             player.adjust_bet_money(wheel)
 
     def settle_game(self, players):
+        num_players = 0
         for player in players:
             if player.is_max_round():
                 print(f"{player.name} reaches the maximum round.")
@@ -40,3 +41,9 @@ class RouletteGame:
                 print(f"{player.name} achieves double profit.")
             else:
                 print(f"{player.name} can continue game.")
+                num_players += 1
+
+        if num_players > 0:
+            return True
+        else:
+            return False

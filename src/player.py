@@ -94,12 +94,15 @@ class Player:
 
         #if wheel_outcome in self.current_placement:
         if bet_result:
-            winnings = self.placement_strategy.payout(self.current_bet_money)
-            self.current_bankroll += winnings
+            payout = self.placement_strategy.payout(self.current_bet_money)
+            self.current_bankroll += payout
             print(f"{self.name} wins!, current bankroll:{self.current_bankroll}")
         else:
-            self.current_bankroll -= self.current_bet_money
+            payout = -self.current_bet_money
+            self.current_bankroll += payout
             print(f"{self.name} loses!, current bankroll:{self.current_bankroll}")
+
+        wheel.store_house_profit(-payout)
 
     def adjust_bet_money(self, wheel):
         if self.on_game == False:
@@ -117,7 +120,7 @@ class Player:
             print(f"{self.name} loses! - current bet money:{self.current_bet_money}")
 
     def is_max_round(self):
-        if self.current_round_number > self.max_round_number:
+        if self.current_round_number >= self.max_round_number:
             self.on_game = False
             return True
 

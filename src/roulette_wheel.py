@@ -7,6 +7,8 @@ class RouletteWheel:
         self.ourcome = None
         self.random_num = RandomNumGen()
 
+        self.house_profit = 0
+
     def spin(self):
         """Simulates spinning the roulette wheel."""
         # American Roulette (0, 00, 1-36)
@@ -17,4 +19,9 @@ class RouletteWheel:
     def get_outcome(self):
         return self.outcome
 
+    def store_house_profit(self, payout):
+        self.house_profit += payout
+
+    def report_house_profit(self):
+        return self.house_profit
     
