@@ -9,9 +9,15 @@ class RouletteSimulator:
         self.players = players
         self.rounds = 10
 
+        self.game = RouletteGame(self.players)        
+        self.wheel = RouletteWheel()
+
     def show_results(self):
         """Displays the final results."""
         print("\n--- Final Results ---")
+        profit = self.wheel.report_house_profit()
+        print(f"House profit: ${profit}")
+        print(f"Players' total profit: ${-profit}")
         for player in self.players:
             print(f"{player.name}'s initial and final bankroll: ${player.get_initial_bankroll()}, ${player.get_current_bankroll()}")
 
@@ -20,12 +26,16 @@ class RouletteSimulator:
 
         self.rounds = roundCount
 
-        self.game = RouletteGame(self.players)        
-        wheel = RouletteWheel()
-
         for round_number in range(self.rounds):
             print(f"\n--- {round_number+1} Round ---")
             self.game.setup_game(self.players)
-            self.game.play_game(wheel)
-            self.game.payout_game(self.players, wheel)
-            self.game.adjust_game(self.players, wheel)
+            
+            self.game.play_game(self.wheel)
+            
+            self.game.payout_game(self.players, self.wheel)
+            self.game.adjust_game(self.players, self.wheel)
+            
+            if self.game.settle_game(self.players) == False:
+                print(f"\n--- Game ends ---")
+                print(f"There is no player.")
+                break

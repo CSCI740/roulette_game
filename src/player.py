@@ -8,13 +8,20 @@ import betting_strategy
 from constants import PlayerType, Bet_Strategy, Placement_Strategy
 
 class Player:
-    def __init__(self, name, player_type, bankroll=100):
+    def __init__(self, name, player_type, bankroll, initial_bet_money, max_round_number):
         self.name = name
         self.player_type = player_type
 
         self.initial_bankroll = bankroll
         self.current_bankroll = bankroll
         
+        self.initial_bet_money = initial_bet_money
+
+        self.max_round_number = max_round_number
+        self.current_round_number = 0
+
+        self.on_game = True
+
         self.random_num = RandomNumGen()
 
         if player_type == PlayerType.HIGH_RISK:
@@ -41,7 +48,7 @@ class Player:
         else:
             print("Unknown Player type")
 
-        self.betting_strategy = BettingStrategy(bet_strategy)
+        self.betting_strategy = BettingStrategy(bet_strategy, self.initial_bet_money)
         self.current_bet_money = self.betting_strategy.init_bet_money(self.current_bankroll)
 
         self.placement_strategy = PlacementStrategy(placement_strategy)
@@ -53,6 +60,11 @@ class Player:
         return self.current_bankroll
 
     def place_bet(self):        
+        if self.on_game == False:
+            return
+
+        self.current_round_number += 1             
+
         """Places a bet on a random number."""
         if self.player_type == PlayerType.HIGH_RISK:
             result = self.random_num.randint(0, 37)
@@ -74,19 +86,28 @@ class Player:
         return self.current_bet_money
     
     def payout(self, wheel):
+        if self.on_game == False:
+            return
+
         wheel_outcome = wheel.get_outcome()
         bet_result = self.placement_strategy.is_winning_place(wheel_outcome)
 
         #if wheel_outcome in self.current_placement:
         if bet_result:
-            winnings = self.placement_strategy.payout(self.current_bet_money)
-            self.current_bankroll += winnings
+            payout = self.placement_strategy.payout(self.current_bet_money)
+            self.current_bankroll += payout
             print(f"{self.name} wins!, current bankroll:{self.current_bankroll}")
         else:
-            self.current_bankroll -= self.current_bet_money
+            payout = -self.current_bet_money
+            self.current_bankroll += payout
             print(f"{self.name} loses!, current bankroll:{self.current_bankroll}")
 
+        wheel.store_house_profit(-payout)
+
     def adjust_bet_money(self, wheel):
+        if self.on_game == False:
+            return
+
         wheel_outcome = wheel.get_outcome()
         bet_result = self.placement_strategy.is_winning_place(wheel_outcome)
 
@@ -98,14 +119,31 @@ class Player:
             self.current_bet_money = self.betting_strategy.adjust_bet_money(False, self.current_bankroll)
             print(f"{self.name} loses! - current bet money:{self.current_bet_money}")
 
-    def is_bankrupt(self):
-        if self.current_bankroll == 0:
+    def is_max_round(self):
+        if self.current_round_number >= self.max_round_number:
+            self.on_game = False
             return True
 
         return False
 
-    def has_more_profit(self, target):
-        if self.current_bankroll >= target:
+    def is_bankrupt(self):
+        if self.current_bankroll == 0:
+            self.on_game = False
+            return True
+
+        return False
+
+    def is_lack_of_betting_money(self):
+        current_bet_money = self.betting_strategy.get_current_bet_money()
+        if self.current_bankroll < current_bet_money:
+            self.on_game = False
+            return True
+
+        return False
+
+    def is_double_profit(self):
+        if self.current_bankroll >= self.initial_bankroll * 2:
+            self.on_game = False
             return True
 
         return False
