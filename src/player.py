@@ -95,7 +95,7 @@ class Player:
         #if wheel_outcome in self.current_placement:
         if bet_result:
             payout = self.placement_strategy.payout(self.current_bet_money)
-            self.current_bankroll += payout
+            self.current_bankroll += payout - self.current_bet_money
             print(f"{self.name} wins!, current bankroll:{self.current_bankroll}")
         else:
             payout = -self.current_bet_money
