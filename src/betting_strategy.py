@@ -100,8 +100,14 @@ class Betting:
                 self.current_bet *= 2  # Double the bet after a loss
             elif self.strategy == Bet_Strategy.DALEMBERT:
                 self.current_bet += 1  # Increase the bet by $1 after a loss for D'Alembert
+            # elif self.strategy == Bet_Strategy.FIBONACCI:
+            #     self.fibonacci_index += 1  # Move to the next number in the Fibonacci sequence
             elif self.strategy == Bet_Strategy.FIBONACCI:
                 self.fibonacci_index += 1  # Move to the next number in the Fibonacci sequence
+                # Ensure the Fibonacci sequence has enough numbers for the current index
+                while len(self.fibonacci_sequence) <= self.fibonacci_index:
+                    next_fib = self.fibonacci_sequence[-1] + self.fibonacci_sequence[-2]  # Fibonacci rule
+                    self.fibonacci_sequence.append(next_fib)
 
         # Check if the player has enough money to place the bet
         if bankroll < self.current_bet:
