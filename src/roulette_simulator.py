@@ -15,12 +15,13 @@ class RouletteSimulator:
     def show_results(self):
         """Displays the final results."""
         print("\n--- Final Results ---")
+
         profit = self.wheel.report_house_profit()
         print(f"House profit: ${profit}")
-        print(f"Players' total profit: ${-profit}")
-        for player in self.players:
-            print(f"{player.name}'s initial and final bankroll: ${player.get_initial_bankroll()}, ${player.get_current_bankroll()}")
 
+        print(f"Players' total profit: ${-profit}")        
+        self.game.get_game_result(self.players)
+        
     def play_roulette(self, roundCount = 10):
         """Plays the game for a set number of rounds."""
 
