@@ -1,6 +1,7 @@
 # Random Number Generator
 
 import random
+import math
 
 class RandomNumGen:
     #def __init__(self):
@@ -39,54 +40,54 @@ class RandomNumGen:
         self.mapping_table = self.build_mapping_table()
 
 
-def calculate_lcm(self, numbers):
-    """
-    Calculate the least common multiple (LCM) of a list of numbers.
-    
-    :param numbers: A list of integers for which the LCM will be computed.
-    :return: The least common multiple of the numbers.
-    
-    Variables:
-    - lcm: A variable to hold the running LCM during computation.
-    - num: Each number in the input list is iterated over to compute the LCM.
-    """
-    lcm = numbers[0]  # Initialize LCM with the first number in the list.
-    for num in numbers[1:]:
-        lcm = lcm * num // math.gcd(lcm, num)  # Compute LCM using the formula.
-    return lcm
+    def calculate_lcm(self, numbers):
+        """
+        Calculate the least common multiple (LCM) of a list of numbers.
+        
+        :param numbers: A list of integers for which the LCM will be computed.
+        :return: The least common multiple of the numbers.
+        
+        Variables:
+        - lcm: A variable to hold the running LCM during computation.
+        - num: Each number in the input list is iterated over to compute the LCM.
+        """
+        lcm = numbers[0]  # Initialize LCM with the first number in the list.
+        for num in numbers[1:]:
+            lcm = lcm * num // math.gcd(lcm, num)  # Compute LCM using the formula.
+        return lcm
 
-def build_mapping_table(self):
-    """
-    Build the mapping table (A[i]) based on probabilities.
-    The table ensures that each outcome k appears in the table in proportion to its probability.
+    def build_mapping_table(self):
+        """
+        Build the mapping table (A[i]) based on probabilities.
+        The table ensures that each outcome k appears in the table in proportion to its probability.
 
-    :return: A list (mapping table) where each index maps to a specific outcome k.
+        :return: A list (mapping table) where each index maps to a specific outcome k.
 
-    Variables:
-    - mapping_table: A list that stores the mapping from indices to outcomes.
-    - k: A key representing an outcome from the probabilities dictionary.
-    - r_k: The numerator of the probability of k.
-    - q_k: The denominator of the probability of k.
-    - count: The number of slots in the mapping table that should be assigned to outcome k,
-                calculated as r_k * (Q / q_k).
-    """
-    mapping_table = []  # Initialize an empty list for the mapping table.
-    for k, (r_k, q_k) in self.probabilities.items():
-        count = r_k * (self.Q // q_k)  # Compute the number of slots for outcome k.
-        mapping_table.extend([k] * count)  # Add k to the table `count` times.
-    print("mapping_table")
-    print(mapping_table)
-    return mapping_table
+        Variables:
+        - mapping_table: A list that stores the mapping from indices to outcomes.
+        - k: A key representing an outcome from the probabilities dictionary.
+        - r_k: The numerator of the probability of k.
+        - q_k: The denominator of the probability of k.
+        - count: The number of slots in the mapping table that should be assigned to outcome k,
+                    calculated as r_k * (Q / q_k).
+        """
+        mapping_table = []  # Initialize an empty list for the mapping table.
+        for k, (r_k, q_k) in self.probabilities.items():
+            count = r_k * (self.Q // q_k)  # Compute the number of slots for outcome k.
+            mapping_table.extend([k] * count)  # Add k to the table `count` times.
+        print("mapping_table")
+        print(mapping_table)
+        return mapping_table
 
-def randint(self):
-    """
-    Generate a random outcome k based on the discrete probability distribution.
+    def randint(self):
+        """
+        Generate a random outcome k based on the discrete probability distribution.
 
-    :return: A random outcome k, determined by sampling from the mapping table.
+        :return: A random outcome k, determined by sampling from the mapping table.
 
-    Variables:
-    - i: A random index generated uniformly in the range [0, Q-1].
-    """
-    i = random.randint(0, self.Q - 1)  # Randomly sample an index between 0 and Q-1.
-    return self.mapping_table[i]  # Return the outcome corresponding to the sampled index. 
+        Variables:
+        - i: A random index generated uniformly in the range [0, Q-1].
+        """
+        i = random.randint(0, self.Q - 1)  # Randomly sample an index between 0 and Q-1.
+        return self.mapping_table[i]  # Return the outcome corresponding to the sampled index. 
 

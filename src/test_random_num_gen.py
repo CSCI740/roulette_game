@@ -9,7 +9,7 @@ probabilities = {
 }
 
 # Initialize the random number generator
-rng = RandomNumGen(probabilities)
+rng = RandomNumGen(probabilities=probabilities)
 
 # Generate random outcomes and count their frequencies
 outcome_counts = {k: 0 for k in probabilities.keys()}

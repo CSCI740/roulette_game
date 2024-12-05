@@ -5,14 +5,14 @@ from random_num_gen import RandomNumGen
 class RouletteWheel:
     def __init__(self):
         self.ourcome = None
-        self.random_num = RandomNumGen()
+        self.random_num = RandomNumGen(0, 37,probabilities=None)
 
         self.house_profit = 0
 
     def spin(self):
         """Simulates spinning the roulette wheel."""
         # American Roulette (0, 00, 1-36)
-        self.outcome = self.random_num.randint(0, 37)
+        self.outcome = self.random_num.randint()
 
         return self.outcome
 
