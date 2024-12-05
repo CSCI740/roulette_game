@@ -65,3 +65,6 @@ class BettingStrategy:
 
     def get_current_bet_money(self):
         return self.current_bet
+
+    def get_betting_strategy(self):
+        return self.bet_strategy

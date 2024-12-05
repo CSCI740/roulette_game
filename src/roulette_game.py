@@ -47,3 +47,7 @@ class RouletteGame:
             return True
         else:
             return False
+
+    def get_game_result(self, players):
+        for player in players:
+            player.get_report()

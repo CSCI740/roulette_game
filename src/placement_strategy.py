@@ -12,6 +12,9 @@ class PlacementStrategy:
     def place_bet(self, bet):
         self.bet = bet
 
+    def get_placement_strategy(self):
+        return self.placementStrategy
+
     def is_winning_place(self, rouletteNumber) -> bool:
         if self.placementStrategy == Placement_Strategy.SINGLE_NUMBER:
             return self.is_winning_number(rouletteNumber)
