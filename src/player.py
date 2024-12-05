@@ -21,25 +21,35 @@ class Player:
         self.current_round_number = 0
 
         self.on_game = True
+        # No need of this code DYL
+        # self.random_num = RandomNumGen()
 
-        self.random_num = RandomNumGen()
 
         if player_type == PlayerType.HIGH_RISK:
-            bet_strategy = self.random_num.randint(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE)
+            # Please see the comments in the code below to fix Random Number Generator DYL
+            self.random_num = RandomNumGen(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE, probabilities=None)
+            # bet_strategy = self.random_num.randint(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE)
+            bet_strategy = self.random_num.randint()
             placement_strategy = Placement_Strategy.SINGLE_NUMBER
             if bet_strategy == Bet_Strategy.ALL_IN:
                 print(f"{self.name}'s strategy - bet:ALL_IN, placement:SINGLE_NUMBER")
             else:
                 print(f"{self.name}'s strategy - bet:MARTINGALE, placement:SINGLE_NUMBER")
         elif player_type == PlayerType.MODERATE_RISK:
-            bet_strategy = self.random_num.randint(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI)
+            # Please see the comments in the code below to fix Random Number Generator DYL
+            self.random_num = RandomNumGen(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI, probabilities=None)
+            # bet_strategy = self.random_num.randint(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI)
+            bet_strategy = self.random_num.randint()
             placement_strategy = Placement_Strategy.DOZENS
             if bet_strategy == Bet_Strategy.MARTINGALE:
                 print(f"{self.name}'s strategy - bet:MARTINGALE, placement:DOZENS")
             else:
                 print(f"{self.name}'s strategy - bet:FIBONACCI, placement:DOZENS")
         elif player_type == PlayerType.LOW_RISK:
-            bet_strategy = self.random_num.randint(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT)
+            # Please see the comments in the code below to fix Random Number Generator DYL
+            self.random_num = RandomNumGen(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT, probabilities=None)
+            # bet_strategy = self.random_num.randint(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT)
+            bet_strategy = self.random_num.randint()
             placement_strategy = Placement_Strategy.RED_BLACK
             if bet_strategy == Bet_Strategy.DALEMBERT:
                 print(f"{self.name}'s strategy - bet:DALEMBERT, placement:RED_BLACK")
@@ -67,13 +77,24 @@ class Player:
 
         """Places a bet on a random number."""
         if self.player_type == PlayerType.HIGH_RISK:
-            result = self.random_num.randint(0, 37)
+
+            # Please see the comments in the code below to fix Random Number Generator DYL
+            self.random_num = RandomNumGen(0,37, probabilities=None)
+            # result = self.random_num.randint(0, 37)
+            result = self.random_num.randint()
             print(f"{self.name}'s bet ${self.current_bet_money} on {result} of Single Number")
         elif self.player_type == PlayerType.MODERATE_RISK:
-            result = self.random_num.randint(0, 2) 
+            # Please see the comments in the code below to fix Random Number Generator DYL
+            self.random_num = RandomNumGen(0,2, probabilities=None)
+            # result = self.random_num.randint(0, 2) 
+            result = self.random_num.randint() 
+
             print(f"{self.name}'s bet ${self.current_bet_money} on {result+1}th dozen")
         elif self.player_type == PlayerType.LOW_RISK:
-            result = self.random_num.randint(0, 1) 
+            # Please see the comments in the code below to fix Random Number Generator DYL
+            self.random_num = RandomNumGen(0,1)
+            # result = self.random_num.randint(0, 1) 
+            result = self.random_num.randint() 
             if(result == 0):
                 print(f"{self.name}'s bet ${self.current_bet_money} on Red")
             else:
