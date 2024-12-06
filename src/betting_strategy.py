@@ -87,4 +87,5 @@ class BettingStrategy:
         """
         return self.current_bet
 
-
+    def get_betting_strategy(self):
+        return self.strategy
