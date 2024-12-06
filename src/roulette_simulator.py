@@ -3,6 +3,7 @@
 from player import Player
 from roulette_wheel import RouletteWheel
 from roulette_game import RouletteGame
+from roulette_simulation_report import SimulationReport 
 
 class RouletteSimulator:
     def __init__(self, players):
@@ -11,17 +12,8 @@ class RouletteSimulator:
 
         self.game = RouletteGame(self.players)        
         self.wheel = RouletteWheel()
-
-    def show_results(self):
-        """Displays the final results."""
-        print("\n--- Final Results ---")
-
-        profit = self.wheel.report_house_profit()
-        print(f"House profit: ${profit}")
-
-        print(f"Players' total profit: ${-profit}")        
-        self.game.get_game_result(self.players)
-        
+        self.report = SimulationReport()  
+             
     def play_roulette(self, roundCount = 10):
         """Plays the game for a set number of rounds."""
 
@@ -40,3 +32,15 @@ class RouletteSimulator:
                 print(f"\n--- Game ends ---")
                 print(f"There is no player.")
                 break
+    def show_results(self):
+        """ Displays the final results of the simulation. """
+        # Add house profit to the report
+        house_profit = self.wheel.report_house_profit()
+        self.report.set_house_profit(house_profit)
+
+        # Add each player's performance to the report
+        for player in self.players:
+            self.report.add_player_report(player)
+
+        # Generate and display the report
+        self.report.generate_report()
