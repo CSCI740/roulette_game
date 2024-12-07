@@ -8,19 +8,21 @@ import betting_strategy
 from constants import PlayerType, Bet_Strategy, Placement_Strategy
 
 class Player:
-    def __init__(self, name, player_type, bankroll, initial_bet_money, max_round_number):
+#    def __init__(self, name, player_type, bankroll, initial_bet_money, max_round_number):
+    def __init__(self, name, player_type):
         self.name = name
         self.player_type = player_type
 
-        self.initial_bankroll = bankroll
-        self.current_bankroll = bankroll
+        #self.initial_bankroll = bankroll
+        #self.current_bankroll = bankroll
         
-        self.initial_bet_money = initial_bet_money
+        #self.initial_bet_money = initial_bet_money
 
-        self.max_round_number = max_round_number
-        self.current_round_number = 0
+        #self.max_round_number = max_round_number
+        #self.current_round_number = 0
 
-        self.on_game = True
+        #self.on_game = True
+        
         # No need of this code DYL
         # self.random_num = RandomNumGen()
 
@@ -28,11 +30,11 @@ class Player:
             # Please see the comments in the code below to fix Random Number Generator DYL
             self.random_num = RandomNumGen(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE, probabilities=None)
             # bet_strategy = self.random_num.randint(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE)
-            bet_strategy = self.random_num.randint()
+            self.bet_strategy = self.random_num.randint()
 
-            placement_strategy = Placement_Strategy.SINGLE_NUMBER
+            self.place_strategy = Placement_Strategy.SINGLE_NUMBER
             self.random_num_bet = RandomNumGen(0,37, probabilities=None)
-            if bet_strategy == Bet_Strategy.ALL_IN:
+            if self.bet_strategy == Bet_Strategy.ALL_IN:
                 print(f"{self.name}'s strategy - bet:ALL_IN, placement:SINGLE_NUMBER")
             else:
                 print(f"{self.name}'s strategy - bet:MARTINGALE, placement:SINGLE_NUMBER")
@@ -42,11 +44,11 @@ class Player:
             # Please see the comments in the code below to fix Random Number Generator DYL
             self.random_num = RandomNumGen(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI, probabilities=None)
             # bet_strategy = self.random_num.randint(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI)
-            bet_strategy = self.random_num.randint()
+            self.bet_strategy = self.random_num.randint()
             
-            placement_strategy = Placement_Strategy.DOZENS
+            self.place_strategy = Placement_Strategy.DOZENS
             self.random_num_bet = RandomNumGen(0, 2, probabilities=None)
-            if bet_strategy == Bet_Strategy.MARTINGALE:
+            if self.bet_strategy == Bet_Strategy.MARTINGALE:
                 print(f"{self.name}'s strategy - bet:MARTINGALE, placement:DOZENS")
             else:
                 print(f"{self.name}'s strategy - bet:FIBONACCI, placement:DOZENS")
@@ -55,11 +57,11 @@ class Player:
             # Please see the comments in the code below to fix Random Number Generator DYL
             self.random_num = RandomNumGen(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT, probabilities=None)
             # bet_strategy = self.random_num.randint(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT)
-            bet_strategy = self.random_num.randint()
+            self.bet_strategy = self.random_num.randint()
 
-            placement_strategy = Placement_Strategy.RED_BLACK
+            self.place_strategy = Placement_Strategy.RED_BLACK
             self.random_num_bet = RandomNumGen(0, 1, probabilities=None)
-            if bet_strategy == Bet_Strategy.DALEMBERT:
+            if self.bet_strategy == Bet_Strategy.DALEMBERT:
                 print(f"{self.name}'s strategy - bet:DALEMBERT, placement:RED_BLACK")
             else:
                 print(f"{self.name}'s strategy - bet:FLAT, placement:RED_BLACK")
@@ -67,16 +69,33 @@ class Player:
         else:
             print("Unknown Player type")
 
-        self.betting_strategy = BettingStrategy(bet_strategy, self.initial_bet_money)
+    def setup_game(self, bankroll, initial_bet_money, max_round_number):
+        self.initial_bankroll = bankroll
+        self.current_bankroll = bankroll
+        
+        self.initial_bet_money = initial_bet_money
+
+        self.max_round_number = max_round_number
+        self.current_round_number = 0
+
+        self.on_game = True
+
+        self.betting_strategy = BettingStrategy(self.bet_strategy, self.initial_bet_money)
         self.current_bet_money = self.betting_strategy.init_bet_money(self.current_bankroll)
 
-        self.placement_strategy = PlacementStrategy(placement_strategy)
+        self.placement_strategy = PlacementStrategy(self.place_strategy)
 
     def get_initial_bankroll(self):
         return self.initial_bankroll
 
     def get_current_bankroll(self):
         return self.current_bankroll
+
+    def get_profit(self):
+        return self.current_bankroll - self.initial_bankroll
+
+    def get_round(self):
+        return self.current_round_number
 
     def place_bet(self):        
         if self.on_game == False:
@@ -178,6 +197,12 @@ class Player:
             return True
 
         return False
+
+    def get_player_profile(self):
+        return [self.name, self.player_type, self.bet_strategy, self.place_strategy]
+
+    def get_player_game_result(self):
+        return [self.initial_bankroll, self.current_bankroll, self.current_round_number, self.current_bankroll - self.initial_bankroll]
 
     def get_report(self):
         print(f"--- {self.name}'s type: {self.player_type}")
