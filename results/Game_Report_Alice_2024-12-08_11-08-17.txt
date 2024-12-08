@@ -1,4 +1,4 @@
-Date: 2024-12-07
+Date: 2024-12-08
 Player name: Alice [High Risk Taker]
 Player's betting strategy: All-In Strategy
 Player's placement strategy: Single Number Strategy
@@ -38,12 +38,18 @@ Player's placement strategy: Single Number Strategy
 ------------------------------------------------------------------------------
                  3000                0               30            -3000
 ------------------------------------------------------------------------------
-Average rounds per day: 1.0
 Winning percentage: 0.0%
-Final loss: $3000
+Total game rounds: 30
+ - Day average: 1.0
+ - Variance: 0.0
+ - 95% confidence interval: [1.0, 1.0]
+Total final loss: $3000
+ - Day average: $-100.0
+ - Variance: $0.0
+ - 95% confidence interval: [$-100.0, $-100.0]
 Ending condition:
-- Bankrupcy: 100.0%
-- Lack of bet money: 0.0%
-- Max round: 0.0%
-- Double profit: 0.0%
+ - Bankrupcy: 100.0%
+ - Lack of bet money: 0.0%
+ - Max round: 0.0%
+ - Double profit: 0.0%
 ------------------------------------------------------------------------------

@@ -8,28 +8,18 @@ import betting_strategy
 from constants import PlayerType, Bet_Strategy, Placement_Strategy
 
 class Player:
-#    def __init__(self, name, player_type, bankroll, initial_bet_money, max_round_number):
-    def __init__(self, name, player_type):
+    def __init__(self, name, player_type, risk_level=5):
         self.name = name
         self.player_type = player_type
 
-        #self.initial_bankroll = bankroll
-        #self.current_bankroll = bankroll
-        
-        #self.initial_bet_money = initial_bet_money
-
-        #self.max_round_number = max_round_number
-        #self.current_round_number = 0
-
-        #self.on_game = True
-        
-        # No need of this code DYL
-        # self.random_num = RandomNumGen()
+        #print("*** Risk Level: ", risk_level)
 
         if player_type == PlayerType.HIGH_RISK:
-            # Please see the comments in the code below to fix Random Number Generator DYL
-            self.random_num = RandomNumGen(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE, probabilities=None)
-            # bet_strategy = self.random_num.randint(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE)
+            probabilities = {
+                Bet_Strategy.ALL_IN: (risk_level, 10),                  # Outcome Bet_Strategy.ALL_IN has a probability of risk_level/10
+                Bet_Strategy.MARTINGALE: (10 - risk_level, 10)}         # Outcome Bet_Strategy.MARTINGALE has a probability of (10 - risk_level)/10}
+
+            self.random_num = RandomNumGen(Bet_Strategy.ALL_IN, Bet_Strategy.MARTINGALE, probabilities)
             self.bet_strategy = self.random_num.randint()
 
             self.place_strategy = Placement_Strategy.SINGLE_NUMBER
@@ -41,9 +31,11 @@ class Player:
             
 
         elif player_type == PlayerType.MODERATE_RISK:
-            # Please see the comments in the code below to fix Random Number Generator DYL
-            self.random_num = RandomNumGen(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI, probabilities=None)
-            # bet_strategy = self.random_num.randint(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI)
+            probabilities = {
+                Bet_Strategy.MARTINGALE: (risk_level, 10),              # Outcome Bet_Strategy.MARTINGALE has a probability of risk_level/10
+                Bet_Strategy.FIBONACCI: (10 - risk_level, 10)}          # Outcome Bet_Strategy.FIBONACCI has a probability of (10 - risk_level)/10}
+
+            self.random_num = RandomNumGen(Bet_Strategy.MARTINGALE, Bet_Strategy.FIBONACCI, probabilities)
             self.bet_strategy = self.random_num.randint()
             
             self.place_strategy = Placement_Strategy.DOZENS
@@ -54,9 +46,11 @@ class Player:
                 print(f"{self.name}'s strategy - bet:FIBONACCI, placement:DOZENS")
 
         elif player_type == PlayerType.LOW_RISK:
-            # Please see the comments in the code below to fix Random Number Generator DYL
-            self.random_num = RandomNumGen(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT, probabilities=None)
-            # bet_strategy = self.random_num.randint(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT)
+            probabilities = {
+                Bet_Strategy.DALEMBERT: (risk_level, 10),            # Outcome Bet_Strategy.DALEMBERT has a probability of risk_level/10
+                Bet_Strategy.FLAT: (10 - risk_level, 10)}           # Outcome Bet_Strategy.FLAT has a probability of (10 - risk_level)/10}
+
+            self.random_num = RandomNumGen(Bet_Strategy.DALEMBERT, Bet_Strategy.FLAT, probabilities)
             self.bet_strategy = self.random_num.randint()
 
             self.place_strategy = Placement_Strategy.RED_BLACK
@@ -105,23 +99,13 @@ class Player:
 
         """Places a bet on a random number."""
         if self.player_type == PlayerType.HIGH_RISK:
-
-            # Please see the comments in the code below to fix Random Number Generator DYL
-            #self.random_num = RandomNumGen(0,37, probabilities=None)
-            # result = self.random_num.randint(0, 37)
             result = self.random_num_bet.randint()
             print(f"{self.name}'s bet ${self.current_bet_money} on {result} of Single Number")
         elif self.player_type == PlayerType.MODERATE_RISK:
-            # Please see the comments in the code below to fix Random Number Generator DYL
-            #self.random_num = RandomNumGen(0, 2, probabilities=None)
-            # result = self.random_num.randint(0, 2) 
             result = self.random_num_bet.randint() 
 
             print(f"{self.name}'s bet ${self.current_bet_money} on {result+1}th dozen")
         elif self.player_type == PlayerType.LOW_RISK:
-            # Please see the comments in the code below to fix Random Number Generator DYL
-            #self.random_num = RandomNumGen(0,1)
-            # result = self.random_num.randint(0, 1) 
             result = self.random_num_bet.randint() 
             if(result == 0):
                 print(f"{self.name}'s bet ${self.current_bet_money} on Red")
@@ -141,7 +125,6 @@ class Player:
         wheel_outcome = wheel.get_outcome()
         bet_result = self.placement_strategy.is_winning_place(wheel_outcome)
 
-        #if wheel_outcome in self.current_placement:
         if bet_result:
             payout = self.placement_strategy.payout(self.current_bet_money)
             self.current_bankroll += payout - self.current_bet_money
@@ -161,7 +144,6 @@ class Player:
         wheel_outcome = wheel.get_outcome()
         bet_result = self.placement_strategy.is_winning_place(wheel_outcome)
 
-        #if wheel_outcome in self.current_placement:
         if bet_result:
             self.current_bet_money = self.betting_strategy.adjust_bet_money(True, self.current_bankroll)
             print(f"{self.name} wins! - next bet money:{self.current_bet_money}")

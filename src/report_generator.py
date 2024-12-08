@@ -4,14 +4,14 @@ from constants import PlayerType, Bet_Strategy, Placement_Strategy
 
 from datetime import datetime
 import matplotlib.pyplot as plt
+import numpy as np
 
 class ReportGenerator:
     def __init__(self):
         self.report_data = []
 
     def record_data(self, players):
-
-        for i, player in enumerate(players):
+        for player in players:
             self.report_data.append([player.name] + player.get_player_game_result())
 
     def generate_report(self, players):
@@ -123,23 +123,92 @@ class ReportGenerator:
 
         return [number_of_round, round_sum, number_of_win, profit_sum, num_bankrup, num_lack, num_max_round, num_double]
 
-    def generate_report_footer(self, file_write, number_of_round, round_sum, number_of_win, profit_sum, num_bankrup, num_lack, num_max_round, num_double):
+    def calculate_mean_and_variance_calculation(self, samples):
+        sample_len = len(samples)
+        sample_mean = 0
+        sample_variance = 0
+   
+        for i in range(sample_len):
+            sample_mean += samples[i]
+        sample_mean /= sample_len
+    
+        for i in range(sample_len):
+            sample_variance += (samples[i] - sample_mean) * (samples[i] - sample_mean)
+        sample_variance /= (sample_len - 1)
 
-        agerage_rounds = round(round_sum / number_of_round, 2)
-        file_write.write("Average rounds per day: {}\n".format(str(agerage_rounds)))
+        confidence_interval = 1.96 * np.sqrt(sample_variance / sample_len)   
+        ci_lower = sample_mean - confidence_interval
+        ci_upper = sample_mean + confidence_interval
+        
+        return (sample_mean, sample_variance, ci_lower, ci_upper)
+        
+    def get_mean_profit_for_players(self, players):
+        mean_profit_list = []        
+        for player in players:
+            cycle_data_for_player = [element for element in self.report_data if element[0] == player.name]
+            profit_list = [element[4] for element in cycle_data_for_player]
+
+            (profit_mean, profit_variance, profit_ci_lower, profit_ci_upper) = self.calculate_mean_and_variance_calculation(profit_list)
+            mean_profit_list.append([player.name, profit_mean])
+
+        return mean_profit_list
+
+    def get_sum_profit_for_players(self, players):
+        mean_profit_list = []        
+        for player in players:
+            cycle_data_for_player = [element for element in self.report_data if element[0] == player.name]
+            profit_list = [element[4] for element in cycle_data_for_player]
+
+            profit_sum = sum(profit_list)
+            mean_profit_list.append([player.name, profit_sum])
+
+        return mean_profit_list
+
+    def get_profit_information(self, player_name):
+        cycle_data_for_player = [element for element in self.report_data if element[0] == player_name]
+        profit_list = [element[4] for element in cycle_data_for_player]
+
+        (profit_mean, profit_variance, profit_ci_lower, profit_ci_upper) = self.calculate_mean_and_variance_calculation(profit_list)
+
+        return (profit_mean, profit_variance, profit_ci_lower, profit_ci_upper)
+
+    def get_round_information(self, player_name):
+        cycle_data_for_player = [element for element in self.report_data if element[0] == player_name]
+        round_list = [element[3] for element in cycle_data_for_player]
+
+        (round_mean, round_variance, round_ci_lower, round_ci_upper) = self.calculate_mean_and_variance_calculation(round_list)
+
+        return (round_mean, round_variance, round_ci_lower, round_ci_upper)
+
+    def generate_report_footer(self, file_write, player, number_of_round, round_sum, number_of_win, profit_sum, num_bankrup, num_lack, num_max_round, num_double):
 
         winning_percentage = round(number_of_win / number_of_round * 100, 2)
-        file_write.write("Winning percentage: {}%\n".format(str(winning_percentage)))
+        file_write.write("Winning percentage: {}%\n".format(winning_percentage))
+
+        agerage_rounds = round(round_sum / number_of_round, 2)
+        (round_mean, round_variance, round_ci_lower, round_ci_upper) = self.get_round_information(player.name)
+        file_write.write("Total game rounds: {}\n".format(round_sum))
+        file_write.write(" - Day average: {}\n".format(round(round_mean, 2)))
+        file_write.write(" - Variance: {}\n".format(round(round_variance, 2)))
+        file_write.write(" - 95% confidence interval: [{}, {}]\n".format(round(round_ci_lower, 2), round(round_ci_upper, 2)))
+
+        (profit_mean, profit_variance, profit_ci_lower, profit_ci_upper) = self.get_profit_information(player.name)
         if profit_sum > 0:
-            file_write.write("Final profit: ${}\n".format(profit_sum))
+            file_write.write("Total final profit: ${}\n".format(profit_sum))
+            file_write.write(" - Day average: ${}\n".format(round(profit_mean, 2)))
+            file_write.write(" - Variance: ${}\n".format(round(profit_variance, 2)))
+            file_write.write(" - 95% confidence interval: [${}, ${}]\n".format(round(profit_ci_lower, 2), round(profit_ci_upper, 2)))
         else:
-            file_write.write("Final loss: ${}\n".format(-profit_sum))
+            file_write.write("Total final loss: ${}\n".format(-profit_sum))
+            file_write.write(" - Day average: ${}\n".format(round(profit_mean, 2)))
+            file_write.write(" - Variance: ${}\n".format(round(profit_variance, 2)))
+            file_write.write(" - 95% confidence interval: [${}, ${}]\n".format(round(profit_ci_lower, 2), round(profit_ci_upper, 2)))
 
         file_write.write("Ending condition:\n")
-        file_write.write("- Bankrupcy: {}%\n".format(str(round(num_bankrup / number_of_round * 100, 2))))
-        file_write.write("- Lack of bet money: {}%\n".format(str(round(num_lack / number_of_round * 100, 2))))
-        file_write.write("- Max round: {}%\n".format(str(round(num_max_round / number_of_round * 100, 2))))
-        file_write.write("- Double profit: {}%\n".format(str(round(num_double / number_of_round * 100, 2))))
+        file_write.write(" - Bankrupcy: {}%\n".format(round(num_bankrup / number_of_round * 100, 2)))
+        file_write.write(" - Lack of bet money: {}%\n".format(round(num_lack / number_of_round * 100, 2)))
+        file_write.write(" - Max round: {}%\n".format(round(num_max_round / number_of_round * 100, 2)))
+        file_write.write(" - Double profit: {}%\n".format(round(num_double / number_of_round * 100, 2)))
 
         file_write.write("------------------------------------------------------------------------------\n")
 
@@ -157,10 +226,12 @@ class ReportGenerator:
         with open(filename, 'w') as f:
             self.generate_report_header(f, player)
             [number_of_round, round_sum, number_of_win, profit_sum, num_bankrup, num_lack, num_max_round, num_double] = self.generate_report_body(f, cycle_data_for_player)
-            self.generate_report_footer(f, number_of_round, round_sum, number_of_win, profit_sum, num_bankrup, num_lack, num_max_round, num_double)
+            self.generate_report_footer(f, player, number_of_round, round_sum, number_of_win, profit_sum, num_bankrup, num_lack, num_max_round, num_double)
     
     def generate_report_plot(self, players):
         filename = f"../results/Game_Report_Plot_{self.current_datetime}.png"
+
+        plt.figure(figsize=(10, 6))         
 
         for player in players:
             cycle_data_for_player = [element for element in self.report_data if element[0] == player.name]
@@ -170,12 +241,123 @@ class ReportGenerator:
             x_values = range(1, x_values_len + 1)         # x-axis index : 1, 2, ...
         
             plt.plot(x_values, profit_list, marker='o', label=player.name)
+            
+        plt.axhline(y=0, color='r', linestyle='--')
+
+        plt.title("Game Result of profit [" + str(x_values_len) + " Days ]")
+        plt.xlabel("Day")
+        plt.ylabel("Profit (Dollars)")
         
-            plt.title("Game Result of profit [" + str(x_values_len) + "Days ]")
-            plt.xlabel("Day")
-            plt.ylabel("Profit")
-        
-            plt.legend(title="Players")
+        plt.legend(title="Players")
         
         # save the plot
         plt.savefig(filename)        
+
+class ReplicationReportGenerator:
+    def __init__(self, num_of_replication):
+        self.report_replication_data = []
+        self.report_replication_sum_profits = []
+        self.num_of_replication = num_of_replication
+
+    def record_simulation_data(self, players, profits, sum_profits):
+        self.report_replication_data.extend(profits)
+        self.report_replication_sum_profits.extend(sum_profits)
+
+    def generate_report(self, players):
+        self.current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+        for player in players:
+            # Write to file for each player
+            self.generate_report_file(player)
+        
+        # Generate plot
+        #self.generate_report_plot(players)
+        self.generate_report_plot_sum_profit(players)
+
+    def calculate_mean_and_variance_calculation(self, samples):
+        sample_len = len(samples)
+        sample_mean = 0
+        sample_variance = 0
+   
+        for i in range(sample_len):
+            sample_mean += samples[i]
+        sample_mean /= sample_len
+    
+        for i in range(sample_len):
+            sample_variance += (samples[i] - sample_mean) * (samples[i] - sample_mean)
+        sample_variance /= (sample_len - 1)
+
+        confidence_interval = 1.96 * np.sqrt(sample_variance / sample_len)   
+        ci_lower = sample_mean - confidence_interval
+        ci_upper = sample_mean + confidence_interval
+        
+        return (sample_mean, sample_variance, ci_lower, ci_upper)
+
+    def generate_report_file(self, player):
+        return 
+
+    def generate_report_plot_mean_profit(self, players):
+        filename = f"../results/Game_Replication_Plot_{self.current_datetime}.png"
+
+        players_name = []
+        players_profit_mean = []
+        players_profit_std = []
+        for player in players:
+            cycle_data_for_player = [element for element in self.report_replication_data if element[0] == player.name]
+            profit_list = [element[1] for element in cycle_data_for_player]
+            (profit_mean, profit_variance, profit_ci_lower, profit_ci_upper) = self.calculate_mean_and_variance_calculation(profit_list)
+
+            players_name.append(player.name)
+            players_profit_mean.append(profit_mean)
+            players_profit_std.append(profit_variance**0.5)
+
+        plt.figure(figsize=(10, 6))
+        plt.errorbar(players_name, players_profit_mean, yerr=players_profit_std, fmt='-o', capsize=5, capthick=2, label='Mean Profit with Std Dev')
+       
+        for xi, yi, yerr_i in zip(players_name, players_profit_mean, players_profit_std):
+            plt.text(xi, yi + yerr_i + 0.2, f'{yi:.2f}', ha='center', va='bottom', fontsize=9)
+
+        plt.xlabel('Players')
+        plt.ylabel('1 Day Profit Mean Estimate (dollars)')
+        plt.title('1 Day Profit for Players [' + str(self.num_of_replication) + ' replicaitons]')
+        plt.grid(True)
+        
+        plt.legend(title="Player Type")
+        
+        # save the plot
+        plt.savefig(filename)       
+
+    def generate_report_plot_sum_profit(self, players):
+        #print("generate plot")
+        filename = f"../results/Game_Replication_Plot_{self.current_datetime}.png"
+
+        players_name = []
+        players_profit_mean = []
+        players_profit_std = []
+        for player in players:
+            cycle_data_for_player = [element for element in self.report_replication_sum_profits if element[0] == player.name]
+            profit_list = [element[1] for element in cycle_data_for_player]
+            (profit_mean, profit_variance, profit_ci_lower, profit_ci_upper) = self.calculate_mean_and_variance_calculation(profit_list)
+
+            players_name.append(player.name)
+            players_profit_mean.append(profit_mean)
+            players_profit_std.append(profit_variance**0.5)
+
+        plt.figure(figsize=(10, 6))
+        plt.errorbar(players_name, players_profit_mean, yerr=players_profit_std, fmt='-o', capsize=5, capthick=2, label='Mean Profit with Std Dev')
+       
+        for xi, yi, yerr_i in zip(players_name, players_profit_mean, players_profit_std):
+            plt.text(xi, yi + yerr_i + 0.2, f'{yi:.2f}', ha='center', va='bottom', fontsize=9)
+
+        plt.xlabel('Players')
+        plt.ylabel('30 Day Profit Mean Estimate (dollars)')
+
+        plt.axhline(y=0, color='r', linestyle='--')
+
+        plt.title('30 Day Profit for Players [' + str(self.num_of_replication) + ' replicaitons]')
+        plt.grid(True)
+        
+        plt.legend(title="Player Type")
+        
+        # save the plot
+        plt.savefig(filename)       
