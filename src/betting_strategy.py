@@ -58,6 +58,9 @@ class BettingStrategy:
             elif self.strategy == Bet_Strategy.MARTINGALE:
                 self.current_bet = self.initial_bet  # Reset to initial bet after a win
 
+            elif self.strategy == Bet_Strategy.ALL_IN:
+                self.current_bet = bankroll  # Bet the entire bankroll
+
         else:  # Loss
             if self.strategy == Bet_Strategy.MARTINGALE:
                 self.current_bet *= 2  # Double the bet after a loss
@@ -71,12 +74,13 @@ class BettingStrategy:
                     self.fibonacci_sequence.append(next_fib)
                 # Update the current bet based on the Fibonacci index
                 self.current_bet = self.fibonacci_sequence[self.fibonacci_index]
-
+            elif self.strategy == Bet_Strategy.ALL_IN:
+                self.current_bet = bankroll  # Bet the entire bankroll
 
         # Check if the player has enough money to place the bet
         if bankroll < self.current_bet:
-            #print(f"Game over! You don't have enough money to place the next bet. Current Money: ${bankroll:.2f}")
-            return 0  # Return 0 to end the game, as the bet cannot be placed
+            self.current_bet = bankroll
+            return self.current_bet
 
         return self.current_bet  # Return the adjusted bet amount
 

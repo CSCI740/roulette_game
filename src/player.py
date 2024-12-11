@@ -8,11 +8,19 @@ import betting_strategy
 from constants import PlayerType, Bet_Strategy, Placement_Strategy
 
 class Player:
-    def __init__(self, name, player_type, risk_level=5):
+    def __init__(self, wheel, name, player_type, risk_level=5, name_twin_original=None):
         self.name = name
         self.player_type = player_type
+        self.name_twin_original = name_twin_original
 
         #print("*** Risk Level: ", risk_level)
+
+        if self.name_twin_original:
+            # current player is twin_replica
+            # get betting strategy and placement strategy from twin_original
+            (self.bet_strategy, self.place_strategy) = wheel.get_participants_strategies(self.name_twin_original)
+            #print("*** ", self.name, "'s strategies are ", self.bet_strategy, self.place_strategy, "because of ", self.name_twin_original)
+            return 
 
         if player_type == PlayerType.HIGH_RISK:
             probabilities = {
@@ -63,6 +71,12 @@ class Player:
         else:
             print("Unknown Player type")
 
+        # current player is twin_original
+        # Store twin_original's result for twin_replicata
+        wheel.put_participants_strategies(self.name, self.bet_strategy, self.place_strategy)
+        #print("*** ", self.name, "'s strategies are", self.bet_strategy, self.place_strategy)
+        return
+
     def setup_game(self, bankroll, initial_bet_money, max_round_number):
         self.initial_bankroll = bankroll
         self.current_bankroll = bankroll
@@ -91,11 +105,19 @@ class Player:
     def get_round(self):
         return self.current_round_number
 
-    def place_bet(self):        
+    def place_bet(self, wheel):        
         if self.on_game == False:
             return
 
         self.current_round_number += 1             
+
+        if self.name_twin_original:
+            # current player is twin_replica
+            # get bet result from twin_original
+            result = wheel.get_participants_bet_result(self.name_twin_original)
+            self.placement_strategy.place_bet(result)
+            #print("*** ", self.name, " bets on ", result, "because of ", self.name_twin_original, " bets on ", result)
+            return self.current_bet_money
 
         """Places a bet on a random number."""
         if self.player_type == PlayerType.HIGH_RISK:
@@ -115,6 +137,11 @@ class Player:
             print("Unknown player type")
 
         self.placement_strategy.place_bet(result)
+        
+        # current player is twin_original
+        # Store twin_original's result for twin_replicata
+        wheel.put_participants_bet_result(self.name, result)
+        #print("*** ", self.name, " bets on ", result)
         
         return self.current_bet_money
     
@@ -180,11 +207,48 @@ class Player:
 
         return False
 
+    def is_x_percentage_profit(self, x_per):
+        if self.current_bankroll >= self.initial_bankroll + self.initial_bankroll * x_per:
+            self.on_game = False
+            return True
+        
+        return False
+
+    def is_ending_condition(self):    
+        if self.name_twin_original:
+            # Intervention plans are applied for twin replica
+            if self.player_type == PlayerType.HIGH_RISK and self.is_double_profit():
+                print(f"{self.name} achieves double profit. - Intervention!")
+                return True
+
+            if self.player_type == PlayerType.MODERATE_RISK and self.is_x_percentage_profit(1.0):
+                print(f"{self.name} achieves 50% profit. - Intervention!")
+                return True
+
+            if self.player_type == PlayerType.LOW_RISK and self.is_x_percentage_profit(0.1):
+                print(f"{self.name} achieves 10% profit. - Intervention!")
+                return True
+
+        if self.is_max_round():
+            print(f"{self.name} reaches the maximum round.")
+            return True
+        elif self.is_bankrupt():
+            print(f"{self.name} is out of money.")
+            return True
+        elif self.is_lack_of_betting_money():
+            print(f"{self.name} is lack of money.")
+            return True
+        else:
+            print(f"{self.name} can continue game.")
+
+        return False
+
     def get_player_profile(self):
         return [self.name, self.player_type, self.bet_strategy, self.place_strategy]
 
     def get_player_game_result(self):
-        return [self.initial_bankroll, self.current_bankroll, self.current_round_number, self.current_bankroll - self.initial_bankroll]
+        #return [self.initial_bankroll, self.current_bankroll, self.current_round_number, self.current_bankroll - self.initial_bankroll]
+        return [self.initial_bankroll, self.current_bankroll, self.max_round_number, self.current_round_number, self.current_bet_money, self.current_bankroll - self.initial_bankroll]
 
     def get_report(self):
         print(f"--- {self.name}'s type: {self.player_type}")

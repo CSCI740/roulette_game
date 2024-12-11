@@ -6,12 +6,13 @@ from roulette_game import RouletteGame
 from roulette_simulation_report import SimulationReport 
 
 class RouletteSimulator:
-    def __init__(self, players):
+    def __init__(self, players, wheel):
         self.players = players
         self.rounds = 10
 
         self.game = RouletteGame(self.players)        
-        self.wheel = RouletteWheel()
+        #self.wheel = RouletteWheel()
+        self.wheel = wheel
         self.report = SimulationReport()  
              
     def play_roulette(self, roundCount = 10):
@@ -21,7 +22,7 @@ class RouletteSimulator:
 
         for round_number in range(self.rounds):
             print(f"\n--- {round_number+1} Round ---")
-            self.game.setup_game(self.players)
+            self.game.setup_game(self.players, self.wheel)
             
             self.game.play_game(self.wheel)
             
