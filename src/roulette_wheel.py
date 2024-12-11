@@ -9,6 +9,10 @@ class RouletteWheel:
 
         self.house_profit = 0
 
+        # Functions for Digital Twin
+        self.participants_strategies = dict()
+        self.participants_bet_result = dict()
+        
     def spin(self):
         """Simulates spinning the roulette wheel."""
         # American Roulette (0, 00, 1-36)
@@ -24,4 +28,16 @@ class RouletteWheel:
 
     def report_house_profit(self):
         return self.house_profit
-    
+
+    # Functions for Digital Twin
+    def put_participants_strategies(self, name, bet_strategy, place_strategy):
+        self.participants_strategies[name] = [bet_strategy, place_strategy]
+
+    def get_participants_strategies(self, name): 
+        return (self.participants_strategies[name][0], self.participants_strategies[name][1])
+
+    def put_participants_bet_result(self, name, place_result):
+        self.participants_bet_result[name] = place_result
+
+    def get_participants_bet_result(self, name):
+        return self.participants_bet_result[name]

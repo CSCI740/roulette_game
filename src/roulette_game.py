@@ -7,10 +7,10 @@ class RouletteGame:
     def __init__(self, players):
         self.players = players
 
-    def setup_game(self, players):
+    def setup_game(self, players, wheel):
         """Plays the game for a set number of rounds."""
         for player in players:
-            player.place_bet()
+            player.place_bet(wheel)
                 
     def play_game(self, wheel):
         result = wheel.spin()
@@ -31,6 +31,9 @@ class RouletteGame:
     def settle_game(self, players):
         num_players = 0
         for player in players:
+            if player.is_ending_condition() == False:    
+                num_players += 1
+            """
             if player.is_max_round():
                 print(f"{player.name} reaches the maximum round.")
             elif player.is_bankrupt():
@@ -42,7 +45,7 @@ class RouletteGame:
             else:
                 print(f"{player.name} can continue game.")
                 num_players += 1
-
+            """
         if num_players > 0:
             return True
         else:
