@@ -273,9 +273,8 @@ class ReplicationReportGenerator:
     def generate_report(self, players):
         self.current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-        for player in players:
-            # Write to file for each player
-            self.generate_report_file(player)
+        # Write to file for each player
+        self.generate_report_file(players)
         
         # Generate plot
         #self.generate_report_plot(players)
@@ -299,9 +298,6 @@ class ReplicationReportGenerator:
         ci_upper = sample_mean + confidence_interval
         
         return (sample_mean, sample_variance, ci_lower, ci_upper)
-
-    def generate_report_file(self, player):
-        return 
 
     def generate_report_plot_mean_profit(self, players):
         filename = f"../results/Game_Replication_Plot_{self.current_datetime}.png"
@@ -333,6 +329,30 @@ class ReplicationReportGenerator:
         
         # save the plot
         plt.savefig(filename)       
+
+    def generate_report_file(self, players):
+        filename = f"../results/Game_Replication_Report_{self.current_datetime}.txt"
+    
+        with open(filename, 'w') as f:
+            f.write("")
+
+            f.write("Date: {}\n".format(datetime.now().strftime("%Y-%m-%d")))
+            f.write("------------------------------------------------------------------------------\n")
+            players_name = []
+            players_profit_mean = []
+            players_profit_std = []
+            for player in players:
+                cycle_data_for_player = [element for element in self.report_replication_sum_profits if element[0] == player.name]
+                profit_list = [element[1] for element in cycle_data_for_player]
+                (profit_mean, profit_variance, profit_ci_lower, profit_ci_upper) = self.calculate_mean_and_variance_calculation(profit_list)
+
+                player_replaced_name = player.name.replace("\n", "_")           # To display name in one line
+                f.write("Player name: {}\n".format(player_replaced_name))
+                f.write("- profit mean': {}\n".format(round(profit_mean, 2)))
+                f.write("- profit variance: {}\n".format(round(profit_variance, 2)))
+                f.write("- 95% confidence interval: [{}, {}]\n".format(round(profit_ci_lower, 2), round(profit_ci_upper, 2)))
+
+                f.write("------------------------------------------------------------------------------\n")
 
     def generate_report_plot_sum_profit(self, players):
         #print("generate plot")
