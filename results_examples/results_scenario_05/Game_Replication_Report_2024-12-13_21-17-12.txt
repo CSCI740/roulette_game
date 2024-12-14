@@ -1,0 +1,62 @@
+Date: 2024-12-13
+------------------------------------------------------------------------------
+Player name: H_Risk_All-In
+- profit mean': -3000.0
+- profit variance: 0.0
+- 95% confidence interval: [-3000.0, -3000.0]
+------------------------------------------------------------------------------
+Player name: H_Risk_All-In(R)
+- profit mean': -181.2
+- profit variance: 10143710.27
+- 95% confidence interval: [-378.6, 16.2]
+------------------------------------------------------------------------------
+Player name: H_Risk_Martin
+- profit mean': -3000.0
+- profit variance: 0.0
+- 95% confidence interval: [-3000.0, -3000.0]
+------------------------------------------------------------------------------
+Player name: H_Risk_Martin(R)
+- profit mean': -100.62
+- profit variance: 2638288.77
+- 95% confidence interval: [-201.29, 0.06]
+------------------------------------------------------------------------------
+Player name: M_Risk_Martin
+- profit mean': -615.0
+- profit variance: 924210.4
+- 95% confidence interval: [-674.59, -555.42]
+------------------------------------------------------------------------------
+Player name: M_Risk_Martin(R)
+- profit mean': -297.63
+- profit variance: 339044.39
+- 95% confidence interval: [-333.72, -261.55]
+------------------------------------------------------------------------------
+Player name: M_Risk_Fibo
+- profit mean': -815.2
+- profit variance: 1299016.26
+- 95% confidence interval: [-885.84, -744.56]
+------------------------------------------------------------------------------
+Player name: M_Risk_Fibo(R)
+- profit mean': -412.97
+- profit variance: 325674.46
+- 95% confidence interval: [-448.34, -377.6]
+------------------------------------------------------------------------------
+Player name: L_Risk_Dalem
+- profit mean': -790.94
+- profit variance: 118629.92
+- 95% confidence interval: [-812.29, -769.59]
+------------------------------------------------------------------------------
+Player name: L_Risk_Dalem(R)
+- profit mean': -302.75
+- profit variance: 54051.2
+- 95% confidence interval: [-317.16, -288.34]
+------------------------------------------------------------------------------
+Player name: L_Risk_Flat
+- profit mean': -158.29
+- profit variance: 2900.0
+- 95% confidence interval: [-161.63, -154.95]
+------------------------------------------------------------------------------
+Player name: L_Risk_Flat(R)
+- profit mean': -144.58
+- profit variance: 3017.65
+- 95% confidence interval: [-147.98, -141.17]
+------------------------------------------------------------------------------

@@ -5,7 +5,7 @@
     1 hour: 10 rounds of Roulette game
     1 person plays roulette for 10 hours per day (100 rounds of Roulette game)
     Each player's betting strategy is non-deterministic.
-    Simulate 30 day with 3 players and replicate this simulation 10000 times
+    Simulate 30 day with 3 players and replicate this simulation 1000 times
     Calculate profit mean, variance and confidence interval 
 """
 
@@ -27,7 +27,7 @@ def scenario_03():
     player_list = [player1, player2, player3]
 
     simulation_days = 30 
-    num_of_sim = 100        # 10000
+    num_of_sim = 1000        # 10000
 
     simulation_replication_report = ReplicationReportGenerator(num_of_sim)
     

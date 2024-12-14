@@ -1,0 +1,32 @@
+Date: 2024-12-13
+------------------------------------------------------------------------------
+Player name: High_Risk
+- profit mean': -3000.0
+- profit variance: 0.0
+- 95% confidence interval: [-3000.0, -3000.0]
+------------------------------------------------------------------------------
+Player name: High_Risk_(Replica)
+- profit mean': -68.0
+- profit variance: 2864919.85
+- 95% confidence interval: [-172.9, 36.91]
+------------------------------------------------------------------------------
+Player name: Moderate_Risk
+- profit mean': -807.46
+- profit variance: 1313764.04
+- 95% confidence interval: [-878.5, -736.42]
+------------------------------------------------------------------------------
+Player name: Moderate_Risk_(Replica)
+- profit mean': -387.0
+- profit variance: 346340.44
+- 95% confidence interval: [-423.48, -350.53]
+------------------------------------------------------------------------------
+Player name: Low_Risk
+- profit mean': -156.17
+- profit variance: 2998.05
+- 95% confidence interval: [-159.56, -152.77]
+------------------------------------------------------------------------------
+Player name: Low_Risk_(Replica)
+- profit mean': -143.49
+- profit variance: 2993.68
+- 95% confidence interval: [-146.88, -140.1]
+------------------------------------------------------------------------------
