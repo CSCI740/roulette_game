@@ -103,23 +103,28 @@ ROULETTE_GAME/
 
 ## Scenarios
 
-### Scenario 1
+### Scenario 1: One Simulation for Each Betting Strategy Analysis (Deterministic)  
+A single simulation is performed for each betting strategy. This deterministic approach ensures consistent outcomes for given initial conditions, allowing for an analysis of expected strategy performance.
 
 
 
-### Scenario 2
+### Scenario 2: One Simulation for Each Betting Strategy Analysis with Digital Twin (Deterministic)  
+Similar to Scenario 1, but incorporates a *digital twin*, a virtual representation of the roulette system that mirrors the physical behavior. The deterministic nature ensures precise and repeatable comparisons between the real system and the digital twin.
 
 
 
-### Scenario 3
+### Scenario 3: Simulation Replications for Player Type Analysis (Non-deterministic)  
+Focuses on analyzing the behavior of different player types (e.g., conservative, aggressive, random bettors) through multiple simulation replications. Randomness is introduced to simulate real-world variability, capturing stochastic outcomes for diverse strategies.
 
 
 
-### Scenario 4
+### Scenario 4: Simulation Replications for Digital Analysis with Digital Twin (Non-deterministic)  
+Combines simulation replications with the use of a *digital twin*. Randomness is introduced in the simulations to account for variability, while the digital twin provides a means to validate its accuracy in modeling real-world randomness.
 
 
 
-### Scenario 5
+### Scenario 5: Simulation Replications for Digital Analysis with Digital Twin (Deterministic)  
+Multiple deterministic replications are performed using a *digital twin*. This setup ensures consistent outcomes for each replication, allowing controlled experimentation to refine the digital twin and evaluate its reliability.
 
 
 
