@@ -41,3 +41,12 @@ class RouletteWheel:
 
     def get_participants_bet_result(self, name):
         return self.participants_bet_result[name]
+
+    # Variance Reduction
+    def spin_AVR(self):
+        """Simulates spinning the roulette wheel."""
+        # American Roulette (0, 00, 1-36)
+        self.outcome = self.random_num.randint_AVR()
+
+        return self.outcome
+    
