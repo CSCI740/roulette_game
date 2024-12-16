@@ -91,3 +91,29 @@ class RandomNumGen:
         i = random.randint(0, self.Q - 1)  # Randomly sample an index between 0 and Q-1.
         return self.mapping_table[i]  # Return the outcome corresponding to the sampled index. 
 
+    # Variance Reduction    
+
+    def randint_AVR(self):
+        """
+        Generate two outcomes: original and the antithetic one.
+        We do this by:
+        1. Generating an integer i in [0, Q-1].
+        2. Converting it to a uniform variable U = i/Q.
+        3. Computing its antithetic counterpart U' = 1 - U.
+        4. Converting U' back to an index for the mapping table.
+
+        return: A list [original_outcome, antithetic_outcome].
+        """
+        i = random.randint(0, self.Q - 1)
+        original_outcome = self.mapping_table[i]
+
+        U = i / self.Q
+        U_prime = 1 - U
+
+        # Use min to ensure we don't go out of range
+        j = min(int(U_prime * self.Q), self.Q - 1)
+        antithetic_outcome = self.mapping_table[j]
+
+        return [original_outcome, antithetic_outcome]
+
+

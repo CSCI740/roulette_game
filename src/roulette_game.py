@@ -54,3 +54,28 @@ class RouletteGame:
     def get_game_result(self, players):
         for player in players:
             player.get_report()
+
+
+
+    # variance reduction 
+
+
+    def setup_game_VR(self, players, wheel,num_bet):
+        """Plays the game for a set number of rounds."""
+        for player in players:
+            player.place_bet_VR(wheel, num_bet)
+
+    def play_game_AVR(self, wheel):
+        result_original_AVR = wheel.spin_AVR()
+        print("Roulette outcome (list):", result_original_AVR)
+
+        return result_original_AVR
+    def payout_game_AVR(self, players, wheel):
+        " Calculates payout for players "
+        for player in self.players:
+            player.payout_AVR(wheel)
+    def adjust_game_AVR(self, players, wheel):
+        " Adjust betting money according to game result"
+        for player in self.players:
+            player.adjust_bet_money_AVR(wheel)
+

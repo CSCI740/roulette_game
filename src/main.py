@@ -6,6 +6,8 @@ from scenario_02 import scenario_02
 from scenario_03 import scenario_03
 from scenario_04 import scenario_04
 from scenario_05 import scenario_05
+from scenario_06 import scenario_06
+from scenario_07 import scenario_07
 
 def how_to_run_simulation():
     print("---------------------------------------------")
@@ -44,6 +46,10 @@ def main():
         scenario_04()
     elif scenario_num == 5:
         scenario_05()
+    elif scenario_num == 6:
+        scenario_06()
+    elif scenario_num == 7:
+        scenario_07()
     else:
         print("Not Abailable scenario")
 

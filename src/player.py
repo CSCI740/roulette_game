@@ -255,3 +255,89 @@ class Player:
         print(f"betting strategy: {self.betting_strategy.get_betting_strategy()}, placement strategy: {self.placement_strategy.get_placement_strategy()}")
         print(f"initial and final bankroll: ${self.initial_bankroll}, ${self.current_bankroll}")
         print(f"profit after {self.current_round_number} round is ${self.current_bankroll - self.initial_bankroll}")
+
+    # Variance Reduction
+
+    def place_bet_VR(self, wheel, num_bet):        
+        if self.on_game == False:
+            return
+        self.current_round_number += 1             
+        self.placement_strategy.place_bet(num_bet)
+        wheel.put_participants_bet_result(self.name, num_bet)
+        return self.current_bet_money
+
+
+
+    def payout_AVR(self, wheel):
+        if not self.on_game:
+            return
+
+        # Get both outcomes: original and antithetic
+        wheel_outcome_original, wheel_outcome_AVR = wheel.get_outcome()
+
+        # Determine if each outcome is a winning bet
+        bet_result_original = self.placement_strategy.is_winning_place(wheel_outcome_original)
+        bet_result_AVR = self.placement_strategy.is_winning_place(wheel_outcome_AVR)
+
+        # Calculate payout for the original outcome
+        if bet_result_original:
+            payout_original = self.placement_strategy.payout(self.current_bet_money) - self.current_bet_money
+        else:
+            payout_original = -self.current_bet_money
+
+        # Calculate payout for the antithetic outcome
+        if bet_result_AVR:
+            payout_AVR = self.placement_strategy.payout(self.current_bet_money) - self.current_bet_money
+        else:
+            payout_AVR = -self.current_bet_money
+
+        # Average the payouts
+        average_payout = (payout_original + payout_AVR) / 2
+
+        # Update player's bankroll with the averaged result
+        self.current_bankroll += average_payout
+
+        # Update house profit with the opposite of the player's averaged payout
+        # Note: The store_house_profit expects the profit from the player's perspective as negative for the house,
+        # so we add -average_payout (since a positive player payout is negative for the house)
+        wheel.store_house_profit(-average_payout)
+
+        # Print the outcome. Consider the averaged result:
+        if average_payout > 0:
+            print(f"{self.name} wins (on average between original & AVR)! - current bankroll: {self.current_bankroll}")
+        elif average_payout < 0:
+            print(f"{self.name} loses (on average between original & AVR)! - current bankroll: {self.current_bankroll}")
+        else:
+            print(f"{self.name} breaks even (on average)! - current bankroll: {self.current_bankroll}")
+
+
+    def adjust_bet_money_AVR(self, wheel):
+        if not self.on_game:
+            return
+
+        # Get both the original and antithetic outcomes
+        wheel_outcome_original, wheel_outcome_AVR = wheel.get_outcome()
+
+        # Determine if each outcome results in a winning bet
+        bet_result_original = self.placement_strategy.is_winning_place(wheel_outcome_original)
+        bet_result_AVR = self.placement_strategy.is_winning_place(wheel_outcome_AVR)
+
+        # Convert booleans to integers for averaging (True=1, False=0)
+        win_original = 1 if bet_result_original else 0
+        win_AVR = 1 if bet_result_AVR else 0
+
+        # Average the results
+        average_win = (win_original + win_AVR) / 2
+
+        # Decide how to adjust the bet based on the averaged result
+        # If average_win >= 0.5, consider it a "win scenario"
+        if average_win >= 0.5:
+            self.current_bet_money = self.betting_strategy.adjust_bet_money(True, self.current_bankroll)
+            print(f"{self.name} (on average) wins! - next bet money: {self.current_bet_money}")
+        else:
+            # Otherwise, consider it a "loss scenario"
+            self.current_bet_money = self.betting_strategy.adjust_bet_money(False, self.current_bankroll)
+            print(f"{self.name} (on average) loses! - next bet money: {self.current_bet_money}")
+
+
+

@@ -45,3 +45,47 @@ class RouletteSimulator:
 
         # Generate and display the report
         self.report.generate_report()
+
+
+    
+    
+    # variance reduction
+
+    def play_roulette_VR(self, roundCount = 10, num_bet=None):
+        """Plays the game for a set number of rounds."""
+
+        self.rounds = roundCount
+
+        for round_number in range(self.rounds):
+            print(f"\n--- {round_number+1} Round ---")
+            self.game.setup_game_VR(self.players, self.wheel, num_bet)
+            
+            self.game.play_game(self.wheel)
+            
+            self.game.payout_game(self.players, self.wheel)
+            self.game.adjust_game(self.players, self.wheel)
+            
+            if self.game.settle_game(self.players) == False:
+                print(f"\n--- Game ends ---")
+                print(f"There is no player.")
+                break
+
+
+    def play_roulette_AVR(self, roundCount = 10):
+        """Plays the game for a set number of rounds."""
+
+        self.rounds = roundCount
+
+        for round_number in range(self.rounds):
+            print(f"\n--- {round_number+1} Round ---")
+            self.game.setup_game(self.players, self.wheel)
+            
+            self.game.play_game_AVR(self.wheel)
+            
+            self.game.payout_game_AVR(self.players, self.wheel)
+            self.game.adjust_game_AVR(self.players, self.wheel)
+            
+            if self.game.settle_game(self.players) == False:
+                print(f"\n--- Game ends ---")
+                print(f"There is no player.")
+                break
