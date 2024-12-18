@@ -126,7 +126,11 @@ Combines simulation replications with the use of a *digital twin*. Randomness is
 ### Scenario 5: Simulation Replications for Digital Analysis with Digital Twin (Deterministic)  
 Multiple deterministic replications are performed using a *digital twin*. This setup ensures consistent outcomes for each replication, allowing controlled experimentation to refine the digital twin and evaluate its reliability.
 
+### Scenario 6: Variance Reduction
+This scenario focuses on the implementation of Common Random Number variance reduction method. It uses Moderate-risk player and compares Martingale and Fibonacci strategies.
 
+## Scenario 7: Variance Reduction
+Antithetic variance reduction method. Implemented for Low-risk and Moderate-risk player.
 
 ## Reporting
 
